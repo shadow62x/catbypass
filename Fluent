@@ -5149,7 +5149,7 @@ HoverChange = 0.08,
             Name = "Dark", -- coca cola theme
 Accent = Color3.fromRGB(255, 0, 0),
 AcrylicMain = Color3.fromRGB(20, 20, 20),
-AcrylicBorder = Color3.fromRGB(150, 0, 0),
+AcrylicBorder = Color3.fromRGB(120, 0, 0),
 AcrylicGradient = ColorSequence.new(Color3.fromRGB(200, 0, 0), Color3.fromRGB(120, 0, 0)),
 AcrylicNoise = 0.92,
 TitleBarLine = Color3.fromRGB(180, 0, 0),
@@ -5161,7 +5161,7 @@ ElementTransparency = 0.84,
 ToggleSlider = Color3.fromRGB(200, 0, 0),
 ToggleToggled = Color3.fromRGB(255, 255, 255),
 SliderRail = Color3.fromRGB(200, 0, 0),
-DropdownFrame = Color3.fromRGB(255, 80, 80),
+DropdownFrame = Color3.fromRGB(255, 50, 50),
 DropdownHolder = Color3.fromRGB(120, 0, 0),
 DropdownBorder = Color3.fromRGB(100, 0, 0),
 DropdownOption = Color3.fromRGB(200, 0, 0),
@@ -5181,8 +5181,6 @@ Text = Color3.fromRGB(255, 255, 255),
 SubText = Color3.fromRGB(200, 200, 200),
 Hover = Color3.fromRGB(220, 0, 0),
 HoverChange = 0.05,
-
-
         }
     end,
     [51] = function()
