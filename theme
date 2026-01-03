@@ -27,7 +27,7 @@ return function()
         Placeholder = Color3.fromHex("#7a7a7a"),
         Button = Color3.fromHex("#2a2a2a"),
         Icon = Color3.fromHex("#a1a1aa"),
-
+        WindowShadow = Color3.fromHex("000000"),
         Hover = Color3.fromHex("#ffffff"),
 
         DialogBackground = Color3.fromHex("#101010"),
