@@ -1,0 +1,63 @@
+return function()
+    return {
+        Name = "DEF",
+        Background = WindUI:Gradient({
+            ["0"] = { Color = Color3.fromHex("#0f0c29"), Transparency = 0 },
+            ["100"] = { Color = Color3.fromHex("#18181b"), Transparency = 0 },
+        }, {
+            Rotation = 90,
+        }),
+        WindowBackground = WindUI:Gradient({
+            ["0"] = { Color = Color3.fromHex("#0f0c29"), Transparency = 0 },
+            ["100"] = { Color = Color3.fromHex("#18181b"), Transparency = 0 },
+        }, {
+            Rotation = 90,
+        }),
+        ElementBackground = WindUI:Gradient({
+            ["0"] = { Color = Color3.fromHex("#0f0c29"), Transparency = 0 },
+            ["100"] = { Color = Color3.fromHex("#18181b"), Transparency = 0 },
+        }, {
+            Rotation = 90,
+        }),
+
+        Accent = Color3.fromHex("#52525b"),
+        BackgroundTransparency = 0,
+        Outline = Color3.fromHex("#2a2a2a"),
+        Text = Color3.fromHex("#e0e0e0"),
+        Placeholder = Color3.fromHex("#7a7a7a"),
+        Button = Color3.fromHex("#2a2a2a"),
+        Icon = Color3.fromHex("#a1a1aa"),
+
+        Hover = Color3.fromHex("#ffffff"),
+
+        DialogBackground = Color3.fromHex("#101010"),
+        DialogBackgroundTransparency = 0,
+        DialogTitle = Color3.fromHex("#ffffff"),
+        DialogContent = Color3.fromHex("#e0e0e0"),
+        DialogIcon = Color3.fromHex("#a1a1aa"),
+
+        WindowTopbarButtonIcon = Color3.fromHex("#a1a1aa"),
+        WindowTopbarTitle = Color3.fromHex("#ffffff"),
+        WindowTopbarAuthor = Color3.fromHex("#a1a1aa"),
+        WindowTopbarIcon = Color3.fromHex("#a1a1aa"),
+
+        TabBackground = Color3.fromHex("#18181b"),
+        TabTitle = Color3.fromHex("#e0e0e0"),
+        TabIcon = Color3.fromHex("#a1a1aa"),
+
+        PopupBackground = Color3.fromHex("#101010"),
+        PopupBackgroundTransparency = 0,
+        PopupTitle = Color3.fromHex("#ffffff"),
+        PopupContent = Color3.fromHex("#e0e0e0"),
+        PopupIcon = Color3.fromHex("#a1a1aa"),
+
+        Toggle = Color3.fromHex("#2a2a2a"),
+        ToggleBar = Color3.fromHex("#52525b"),
+
+        Checkbox = Color3.fromHex("#2a2a2a"),
+        CheckboxIcon = Color3.fromHex("#ffffff"),
+
+        Slider = Color3.fromHex("#2a2a2a"),
+        SliderThumb = Color3.fromHex("#ffffff"),
+    }
+end
