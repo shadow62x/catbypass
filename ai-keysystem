@@ -1,0 +1,414 @@
+local a = {}
+a.cfg = {
+    title = "yourscript",
+    desc = "your script description here",
+    note = "join discord.gg/yourserver to get your key",
+    bgcolor = Color3.fromRGB(15,15,25),
+    accent = Color3.fromRGB(88,177,255),
+    text = Color3.fromRGB(255,255,255),
+    text2 = Color3.fromRGB(180,180,200),
+    border = Color3.fromRGB(50,50,70),
+    hover = Color3.fromRGB(100,190,255),
+    corn = UDim.new(0,12),
+    speed = 0.25,
+    keys = {"KEY123","TESTKEY456","DEMO789"},
+    getkey_link = "https://your.link/here",
+    notif_life = 3
+}
+
+local tween = game:GetService("TweenService")
+local core = game:GetService("CoreGui")
+
+local nroot
+local noff = 0
+
+local function ninit()
+    if nroot and nroot.Parent then return nroot end
+    local g = Instance.new("ScreenGui")
+    g.Name = "ks_notif_gui"
+    g.IgnoreGuiInset = true
+    g.ResetOnSpawn = false
+    g.Parent = core
+    local f = Instance.new("Frame")
+    f.Name = "root"
+    f.AnchorPoint = Vector2.new(1,0)
+    f.Position = UDim2.new(1,-20,0,20)
+    f.Size = UDim2.new(0,260,1,-40)
+    f.BackgroundTransparency = 1
+    f.Parent = g
+    nroot = f
+    noff = 0
+    return f
+end
+
+local function notify(txt, col)
+    local r = ninit()
+    noff = noff + 1
+    local b = Instance.new("Frame")
+    b.Name = "n"
+    b.AnchorPoint = Vector2.new(1,0)
+    b.Size = UDim2.new(0,260,0,38)
+    b.Position = UDim2.new(1,0,0,(noff-1)*42)
+    b.BackgroundColor3 = a.cfg.bgcolor
+    b.BackgroundTransparency = 0.1
+    b.BorderSizePixel = 0
+    b.Parent = r
+    local c1 = Instance.new("UICorner")
+    c1.CornerRadius = UDim.new(0,8)
+    c1.Parent = b
+    local s = Instance.new("UIStroke")
+    s.Color = col or a.cfg.accent
+    s.Thickness = 1.5
+    s.Parent = b
+    local t = Instance.new("TextLabel")
+    t.BackgroundTransparency = 1
+    t.Size = UDim2.new(1,-12,1,-8)
+    t.Position = UDim2.new(0,8,0,4)
+    t.Font = Enum.Font.Gotham
+    t.TextSize = 13
+    t.TextXAlignment = Enum.TextXAlignment.Left
+    t.TextYAlignment = Enum.TextYAlignment.Center
+    t.TextColor3 = a.cfg.text
+    t.Text = txt or "notification"
+    t.Parent = b
+    b.BackgroundTransparency = 1
+    t.TextTransparency = 1
+    s.Transparency = 1
+    tween:Create(b,TweenInfo.new(0.25,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{BackgroundTransparency = 0.1}):Play()
+    tween:Create(t,TweenInfo.new(0.25),{TextTransparency = 0}):Play()
+    tween:Create(s,TweenInfo.new(0.25),{Transparency = 0}):Play()
+    task.delay(a.cfg.notif_life,function()
+        tween:Create(b,TweenInfo.new(0.25),{BackgroundTransparency = 1}):Play()
+        tween:Create(t,TweenInfo.new(0.25),{TextTransparency = 1}):Play()
+        tween:Create(s,TweenInfo.new(0.25),{Transparency = 1}):Play()
+        task.wait(0.27)
+        if b and b.Parent then
+            b:Destroy()
+        end
+        noff = math.max(noff-1,0)
+        local idx = 0
+        for _,k in ipairs(r:GetChildren()) do
+            if k:IsA("Frame") then
+                idx = idx + 1
+                tween:Create(k,TweenInfo.new(0.18),{Position = UDim2.new(1,0,0,(idx-1)*42)}):Play()
+            end
+        end
+    end)
+end
+
+local function make_ui(cb)
+    local g = Instance.new("ScreenGui")
+    g.Name = "KeySystemGui"
+    g.ResetOnSpawn = false
+    g.ZIndex = 100
+    g.Parent = core
+
+    local h = Instance.new("Frame")
+    h.Name = "main"
+    h.Size = UDim2.new(0,480,0,600)
+    h.Position = UDim2.new(0.5,-240,0.5,-300)
+    h.BackgroundColor3 = a.cfg.bgcolor
+    h.BorderSizePixel = 0
+    h.Parent = g
+
+    local ic = Instance.new("UICorner")
+    ic.CornerRadius = a.cfg.corn
+    ic.Parent = h
+
+    local st = Instance.new("UIStroke")
+    st.Color = a.cfg.border
+    st.Thickness = 2
+    st.Parent = h
+
+    local gl = Instance.new("Frame")
+    gl.Name = "glow"
+    gl.Size = UDim2.new(1,0,1,0)
+    gl.BackgroundColor3 = a.cfg.accent
+    gl.BackgroundTransparency = 0.95
+    gl.BorderSizePixel = 0
+    gl.ZIndex = -1
+    gl.Parent = h
+
+    local glc = Instance.new("UICorner")
+    glc.CornerRadius = a.cfg.corn
+    glc.Parent = gl
+
+    local tl = Instance.new("TextLabel")
+    tl.Name = "title"
+    tl.Size = UDim2.new(1,0,0,50)
+    tl.Position = UDim2.new(0,0,0,30)
+    tl.BackgroundTransparency = 1
+    tl.Text = a.cfg.title
+    tl.TextColor3 = a.cfg.text
+    tl.TextSize = 32
+    tl.Font = Enum.Font.GothamBold
+    tl.TextScaled = true
+    tl.Parent = h
+
+    local ds = Instance.new("TextLabel")
+    ds.Name = "desc"
+    ds.Size = UDim2.new(0.9,0,0,30)
+    ds.Position = UDim2.new(0.05,0,0,85)
+    ds.BackgroundTransparency = 1
+    ds.Text = a.cfg.desc
+    ds.TextColor3 = a.cfg.text2
+    ds.TextSize = 14
+    ds.Font = Enum.Font.Gotham
+    ds.TextWrapped = true
+    ds.Parent = h
+
+    local dv = Instance.new("Frame")
+    dv.Name = "div"
+    dv.Size = UDim2.new(0.8,0,0,1)
+    dv.Position = UDim2.new(0.1,0,0,125)
+    dv.BackgroundColor3 = a.cfg.border
+    dv.BorderSizePixel = 0
+    dv.Parent = h
+
+    local kl = Instance.new("TextLabel")
+    kl.Name = "keylabel"
+    kl.Size = UDim2.new(0.9,0,0,25)
+    kl.Position = UDim2.new(0.05,0,0,150)
+    kl.BackgroundTransparency = 1
+    kl.Text = "enter your key"
+    kl.TextColor3 = a.cfg.text
+    kl.TextSize = 14
+    kl.Font = Enum.Font.GothamBold
+    kl.TextXAlignment = Enum.TextXAlignment.Left
+    kl.Parent = h
+
+    local tb = Instance.new("TextBox")
+    tb.Name = "keyinput"
+    tb.Size = UDim2.new(0.9,0,0,45)
+    tb.Position = UDim2.new(0.05,0,0,180)
+    tb.BackgroundColor3 = a.cfg.bgcolor
+    tb.BorderColor3 = a.cfg.border
+    tb.BorderSizePixel = 2
+    tb.TextColor3 = a.cfg.text
+    tb.TextSize = 16
+    tb.Font = Enum.Font.Gotham
+    tb.PlaceholderText = "paste key here..."
+    tb.PlaceholderColor3 = a.cfg.text2
+    tb.ClearTextOnFocus = false
+    tb.Parent = h
+
+    local tbc = Instance.new("UICorner")
+    tbc.CornerRadius = UDim.new(0,8)
+    tbc.Parent = tb
+
+    tb.FocusLost:Connect(functionr)
+        if functionr then return end
+        tween:Create(tb,TweenInfo.new(0.2),{BorderColor3 = a.cfg.accent}):Play()
+        task.wait(0.3)
+        tween:Create(tb,TweenInfo.new(0.2),{BorderColor3 = a.cfg.border}):Play()
+    end)
+
+    local gk = Instance.new("TextButton")
+    gk.Name = "getkey"
+    gk.Size = UDim2.new(0.43,0,0,45)
+    gk.Position = UDim2.new(0.05,0,0,240)
+    gk.BackgroundColor3 = a.cfg.accent
+    gk.BorderSizePixel = 0
+    gk.Text = "get key"
+    gk.TextColor3 = a.cfg.bgcolor
+    gk.TextSize = 14
+    gk.Font = Enum.Font.GothamBold
+    gk.Parent = h
+
+    local gkc = Instance.new("UICorner")
+    gkc.CornerRadius = UDim.new(0,8)
+    gkc.Parent = gk
+
+    local vk = Instance.new("TextButton")
+    vk.Name = "verify"
+    vk.Size = UDim2.new(0.43,0,0,45)
+    vk.Position = UDim2.new(0.52,0,0,240)
+    vk.BackgroundColor3 = a.cfg.border
+    vk.BorderSizePixel = 0
+    vk.Text = "verify key"
+    vk.TextColor3 = a.cfg.text
+    vk.TextSize = 14
+    vk.Font = Enum.Font.GothamBold
+    vk.Parent = h
+
+    local vkc = Instance.new("UICorner")
+    vkc.CornerRadius = UDim.new(0,8)
+    vkc.Parent = vk
+
+    local lock = false
+    local function pulse(btn)
+        if lock then return end
+        lock = true
+        local base = btn.BackgroundColor3
+        tween:Create(btn,TweenInfo.new(0.1),{BackgroundColor3 = a.cfg.hover}):Play()
+        task.wait(0.1)
+        tween:Create(btn,TweenInfo.new(0.15),{BackgroundColor3 = base}):Play()
+        task.wait(0.16)
+        lock = false
+    end
+
+    gk.MouseButton1Click:Connect(function()
+        pulse(gk)
+        setclipboard(a.cfg.getkey_link or "https://your.link/here")
+        notify("key link copied to clipboard",a.cfg.accent)
+    end)
+
+    vk.MouseButton1Click:Connect(function()
+        pulse(vk)
+        local v = tb.Text:upper()
+        local ok = false
+        for _,k in ipairs(a.cfg.keys) do
+            if v == k then
+                ok = true
+                break
+            end
+        end
+        if ok then
+            tween:Create(vk,TweenInfo.new(0.3),{BackgroundColor3 = Color3.fromRGB(76,175,80)}):Play()
+            vk.Text = "✓ valid key"
+            notify("key verified, loading...",Color3.fromRGB(76,175,80))
+            task.wait(1)
+            g:Destroy()
+            if typeof(cb) == "function" then cb() end
+        else
+            notify("invalid key",Color3.fromRGB(200,80,80))
+            tween:Create(h,TweenInfo.new(0.08),{Position = h.Position + UDim2.new(0,10,0,0)}):Play()
+            task.wait(0.08)
+            tween:Create(h,TweenInfo.new(0.08),{Position = h.Position - UDim2.new(0,20,0,0)}):Play()
+            task.wait(0.08)
+            tween:Create(h,TweenInfo.new(0.08),{Position = UDim2.new(0.5,-240,0.5,-300)}):Play()
+        end
+    end)
+
+    local nt = Instance.new("TextLabel")
+    nt.Name = "note"
+    nt.Size = UDim2.new(0.9,0,0,80)
+    nt.Position = UDim2.new(0.05,0,0,310)
+    nt.BackgroundTransparency = 1
+    nt.Text = a.cfg.note
+    nt.TextColor3 = a.cfg.text2
+    nt.TextSize = 12
+    nt.Font = Enum.Font.Gotham
+    nt.TextWrapped = true
+    nt.TextYAlignment = Enum.TextYAlignment.Top
+    nt.Parent = h
+
+    local th = Instance.new("Frame")
+    th.Name = "theme"
+    th.Size = UDim2.new(0.9,0,0,70)
+    th.Position = UDim2.new(0.05,0,0,400)
+    th.BackgroundColor3 = a.cfg.border
+    th.BorderSizePixel = 0
+    th.Parent = h
+
+    local thc = Instance.new("UICorner")
+    thc.CornerRadius = UDim.new(0,8)
+    thc.Parent = th
+
+    local thl = Instance.new("TextLabel")
+    thl.Name = "label"
+    thl.Size = UDim2.new(0.8,0,0,20)
+    thl.Position = UDim2.new(0.1,0,0,8)
+    thl.BackgroundTransparency = 1
+    thl.Text = "theme"
+    thl.TextColor3 = a.cfg.text
+    thl.TextSize = 12
+    thl.Font = Enum.Font.GothamBold
+    thl.Parent = th
+
+    local dk = Instance.new("TextButton")
+    dk.Name = "dark"
+    dk.Size = UDim2.new(0.35,0,0,30)
+    dk.Position = UDim2.new(0.1,0,0,32)
+    dk.BackgroundColor3 = a.cfg.accent
+    dk.BorderSizePixel = 0
+    dk.Text = "dark"
+    dk.TextColor3 = a.cfg.bgcolor
+    dk.TextSize = 11
+    dk.Font = Enum.Font.GothamBold
+    dk.Parent = th
+
+    local dkc = Instance.new("UICorner")
+    dkc.CornerRadius = UDim.new(0,6)
+    dkc.Parent = dk
+
+    local lt = Instance.new("TextButton")
+    lt.Name = "light"
+    lt.Size = UDim2.new(0.35,0,0,30)
+    lt.Position = UDim2.new(0.55,0,0,32)
+    lt.BackgroundColor3 = a.cfg.text2
+    lt.BorderSizePixel = 0
+    lt.Text = "light"
+    lt.TextColor3 = a.cfg.bgcolor
+    lt.TextSize = 11
+    lt.Font = Enum.Font.GothamBold
+    lt.Parent = th
+
+    local ltc = Instance.new("UICorner")
+    ltc.CornerRadius = UDim.new(0,6)
+    ltc.Parent = lt
+
+    dk.MouseButton1Click:Connect(function()
+        a:settheme("dark")
+        notify("switched to dark theme",a.cfg.accent)
+    end)
+
+    lt.MouseButton1Click:Connect(function()
+        a:settheme("light")
+        notify("switched to light theme",a.cfg.accent)
+    end)
+
+    local stl = Instance.new("TextLabel")
+    stl.Name = "status"
+    stl.Size = UDim2.new(0.9,0,0,30)
+    stl.Position = UDim2.new(0.05,0,0,490)
+    stl.BackgroundTransparency = 1
+    stl.Text = "status: waiting for verification..."
+    stl.TextColor3 = a.cfg.text2
+    stl.TextSize = 11
+    stl.Font = Enum.Font.Gotham
+    stl.Parent = h
+
+    h.Position = UDim2.new(0.5,-240,1.1,0)
+    tween:Create(h,TweenInfo.new(0.5,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{Position = UDim2.new(0.5,-240,0.5,-300)}):Play()
+
+    return {
+        gui = g,
+        container = h,
+        input = tb,
+        verify = vk,
+        getkey = gk,
+        status = stl
+    }
+end
+
+function a:settheme(m)
+    if m == "dark" then
+        self.cfg.bgcolor = Color3.fromRGB(15,15,25)
+        self.cfg.text = Color3.fromRGB(255,255,255)
+        self.cfg.text2 = Color3.fromRGB(180,180,200)
+        self.cfg.border = Color3.fromRGB(50,50,70)
+        self.cfg.accent = Color3.fromRGB(88,177,255)
+        self.cfg.hover = Color3.fromRGB(100,190,255)
+    elseif m == "light" then
+        self.cfg.bgcolor = Color3.fromRGB(245,245,250)
+        self.cfg.text = Color3.fromRGB(20,20,40)
+        self.cfg.text2 = Color3.fromRGB(100,100,130)
+        self.cfg.border = Color3.fromRGB(200,200,220)
+        self.cfg.accent = Color3.fromRGB(70,150,255)
+        self.cfg.hover = Color3.fromRGB(90,170,255)
+    end
+end
+
+function a:config(tbl)
+    for k,v in pairs(tbl) do
+        self.cfg[k] = v
+    end
+end
+
+function a:show(cb)
+    local ui = make_ui(cb)
+    return ui
+end
+
+return a
