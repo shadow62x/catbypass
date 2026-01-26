@@ -5,353 +5,335 @@
 
 -- This script is REALLY customizable, has optimization and is very clean!
 
-local a = game:GetService("RunService")
-local b = game:GetService("Players")
-local c = game:GetService("HttpService")
-local d = {}
-d.__index = d
-local e = {}
-local f = {
-	Layers = 3,
-	Chromatic = true,
-	Bands = 10,
-	BandWidth = 0.06,
-	Wobble = 0.16,
-	NoiseSpeed = 1.0,
-	FOVSpread = 1.2,
-	CornerRadius = 12,
-	SheenStrength = 0.9,
-	SheenAngle = 45,
-	CloneRadius = 180,
-	MaxClones = 150,
-	UpdateClonesEvery = 2.5,
-	Performance = "medium",
-	UseTargetsFolder = true,
-	AllowSurfaceGui = true,
-	AutoMask = true,
-	Debug = false,
+local r = game:GetService("RunService")
+local w = game:GetService("Workspace")
+local h = game:GetService("HttpService")
+
+local m = {}
+m.__index = m
+
+local a = {}
+
+local d = {
+ layers = 4,
+ bands = 14,
+ wobble = 0.18,
+ spread = 1.6,
+ speed = 1.05,
+ radius = 200,
+ maxc = 180,
+ refreq = 1.8,
+ corner = 22,
+ chroma = true,
+ bandh = 0.055,
+ usefolder = true,
+ debug = false
 }
-local g = {
-	low = { Layers = 2, Bands = 6, NoiseSpeed = 0.9, UpdateClonesEvery = 4.0, MaxClones = 60 },
-	medium = { Layers = 3, Bands = 10, NoiseSpeed = 1.0, UpdateClonesEvery = 2.5, MaxClones = 120 },
-	high = { Layers = 4, Bands = 16, NoiseSpeed = 1.2, UpdateClonesEvery = 1.2, MaxClones = 220 },
-}
-local function h(x, y)
-	local z = {}
-	for k,v in pairs(x) do z[k] = v end
-	if y then for k,v in pairs(y) do z[k] = v end end
-	return z
+
+local function q(u,v)
+ local t = {}
+ for i,o in pairs(u) do t[i] = o end
+ if v then
+  for i,o in pairs(v) do
+   t[i] = o
+  end
+ end
+ return t
 end
-local function j(w, o)
-	for _,c in pairs(w:GetChildren()) do c:Destroy() end
-	local t = workspace:FindFirstChild("GlassCloneTargets")
-	if o.UseTargetsFolder and t then
-		for _,p in pairs(t:GetDescendants()) do
-			if p:IsA("BasePart") or p:IsA("Model") then
-				local ok, q = pcall(function() return p:Clone() end)
-				if ok and q then
-					for _,r in pairs(q:GetDescendants()) do
-						if r:IsA("BasePart") then
-							r.CanCollide = false
-							r.Anchored = true
-						end
-						if r:IsA("Humanoid") then r:Destroy() end
-					end
-					q.Parent = w
-				end
-			end
-		end
-		return
-	end
-	local s = workspace.CurrentCamera
-	local u = s and s.CFrame.Position or Vector3.new(0,0,0)
-	local v = 0
-	for _,m in pairs(workspace:GetDescendants()) do
-		if v >= (o.MaxClones or f.MaxClones) then break end
-		if m:IsA("BasePart") and m.Anchored ~= nil and m.Parent ~= w and m.Name ~= "GlassCloneExclude" and not m:IsDescendantOf(w) then
-			local ok, x = pcall(function() return m.Position end)
-			if ok and x and (x - u).Magnitude <= (o.CloneRadius or f.CloneRadius) then
-				local y = m:Clone()
-				for _,r in pairs(y:GetDescendants()) do
-					if r:IsA("Script") or r:IsA("LocalScript") or r:IsA("ModuleScript") then
-						r:Destroy()
-					elseif r:IsA("BasePart") then
-						r.CanCollide = false
-						r.Anchored = true
-					elseif r:IsA("Humanoid") then
-						r:Destroy()
-					end
-				end
-				y.Parent = w
-				v = v + 1
-			end
-		end
-	end
+
+local function k(p,o)
+ for _,x in pairs(p:GetChildren()) do x:Destroy() end
+ local g = w:FindFirstChild("GlassCloneTargets")
+ if o.usefolder and g then
+  for _,x in pairs(g:GetDescendants()) do
+   if x:IsA("BasePart") or x:IsA("Model") then
+    local ok,b = pcall(function() return x:Clone() end)
+    if ok and b then
+     for _,y in pairs(b:GetDescendants()) do
+      if y:IsA("BasePart") then
+       y.CanCollide = false
+       y.Anchored = true
+      elseif y:IsA("Humanoid") then
+       y:Destroy()
+      elseif y:IsA("Script") or y:IsA("LocalScript") or y:IsA("ModuleScript") then
+       y:Destroy()
+      end
+     end
+     b.Parent = p
+    end
+   end
+  end
+  return
+ end
+ local c = w.CurrentCamera
+ local z = c and c.CFrame.Position or Vector3.new()
+ local n = 0
+ for _,x in pairs(w:GetDescendants()) do
+  if n >= (o.maxc or d.maxc) then break end
+  if x:IsA("BasePart") and x.Parent ~= p and not x:IsDescendantOf(p) then
+   local ok,b = pcall(function() return x.Position end)
+   if ok and b and (b - z).Magnitude <= (o.radius or d.radius) then
+    local v = x:Clone()
+    for _,y in pairs(v:GetDescendants()) do
+     if y:IsA("BasePart") then
+      y.CanCollide = false
+      y.Anchored = true
+     elseif y:IsA("Humanoid") then
+      y:Destroy()
+     elseif y:IsA("Script") or y:IsA("LocalScript") or y:IsA("ModuleScript") then
+      y:Destroy()
+     end
+    end
+    v.Parent = p
+    n = n + 1
+   end
+  end
+ end
 end
-local function k(h, o)
-	local i = Instance.new("Frame")
-	i.Name = "SheenTopLeft"
-	i.Size = UDim2.new(0.6,0,0.18,0)
-	i.Position = UDim2.new(0, -10, 0, -10)
-	i.BackgroundTransparency = 1
-	i.ZIndex = h.ZIndex + 999
-	i.Parent = h
-	local j = Instance.new("UIGradient", i)
-	j.Rotation = o.SheenAngle or 40
-	j.Color = ColorSequence.new({
-		ColorSequenceKeypoint.new(0, Color3.new(1,1,1)),
-		ColorSequenceKeypoint.new(0.5, Color3.new(1,1,1)),
-		ColorSequenceKeypoint.new(1, Color3.new(1,1,1)),
-	})
-	j.Transparency = NumberSequence.new({
-		NumberSequenceKeypoint.new(0, 1 - (o.SheenStrength or 0.9)),
-		NumberSequenceKeypoint.new(0.6, 1),
-		NumberSequenceKeypoint.new(1, 1 - (o.SheenStrength or 0.9)),
-	})
-	local l = Instance.new("Frame")
-	l.Name = "SheenBottomRight"
-	l.Size = UDim2.new(0.6,0,0.18,0)
-	l.AnchorPoint = Vector2.new(1,1)
-	l.Position = UDim2.new(1, 10, 1, 10)
-	l.BackgroundTransparency = 1
-	l.ZIndex = h.ZIndex + 999
-	l.Parent = h
-	local m = Instance.new("UIGradient", l)
-	m.Rotation = (o.SheenAngle or 40) + 180
-	m.Color = ColorSequence.new({
-		ColorSequenceKeypoint.new(0, Color3.new(1,1,1)*0.85),
-		ColorSequenceKeypoint.new(1, Color3.new(1,1,1)*0.85),
-	})
-	m.Transparency = NumberSequence.new({
-		NumberSequenceKeypoint.new(0, 1 - ((o.SheenStrength or 0.9) * 0.55)),
-		NumberSequenceKeypoint.new(1, 1),
-	})
-	return {tl = i, br = l}
+
+local function b(t,o)
+ local u = {}
+ local c = math.clamp(o.bands or d.bands,0,64)
+ local s = o.bandh or d.bandh
+ if c <= 0 then return {holder=nil,bands=u} end
+ local f = Instance.new("Frame")
+ f.Name = "lg_bands"
+ f.Size = UDim2.fromScale(1,1)
+ f.BackgroundTransparency = 1
+ f.ClipsDescendants = true
+ f.ZIndex = t.ZIndex + 40
+ f.Parent = t
+ for i = 1,c do
+  local x = Instance.new("Frame")
+  x.Name = "b"..i
+  x.Size = UDim2.new(1,0,s,0)
+  local y = (i-1) / math.max(1,c-1)
+  x.Position = UDim2.new(0,0,y - s/2,0)
+  x.BackgroundColor3 = Color3.fromRGB(255,255,255)
+  x.BackgroundTransparency = 0.92
+  x.ZIndex = f.ZIndex + 1
+  local g = Instance.new("UIGradient")
+  g.Rotation = 0
+  g.Color = ColorSequence.new(
+   ColorSequenceKeypoint.new(0,Color3.fromRGB(255,255,255)),
+   ColorSequenceKeypoint.new(1,Color3.fromRGB(210,220,235))
+  )
+  g.Transparency = NumberSequence.new(
+   NumberSequenceKeypoint.new(0,0.86),
+   NumberSequenceKeypoint.new(1,0.95)
+  )
+  g.Parent = x
+  x.Parent = f
+  table.insert(u,x)
+ end
+ return {holder=f,bands=u}
 end
-local function l(h, o)
-	local i = {}
-	local j = math.clamp(o.Bands or f.Bands, 0, 80)
-	local k = o.BandWidth or f.BandWidth
-	if j <= 0 then return i end
-	local m = Instance.new("Frame")
-	m.Name = "LiquidBands"
-	m.Size = UDim2.fromScale(1,1)
-	m.Position = UDim2.new(0,0,0,0)
-	m.BackgroundTransparency = 1
-	m.ClipsDescendants = true
-	m.ZIndex = 999
-	m.Parent = h
-	for n = 1, j do
-		local o = Instance.new("Frame")
-		o.Name = "Band"..n
-		o.Size = UDim2.new(1,0, k, 0)
-		local p = (n-1) / math.max(1, j-1)
-		o.Position = UDim2.new(0,0, p - k/2, 0)
-		o.BackgroundTransparency = 0.92
-		local q = Instance.new("UIGradient", o)
-		q.Rotation = 0
-		q.Color = ColorSequence.new{
-			ColorSequenceKeypoint.new(0, Color3.new(1,1,1) * 0.98),
-			ColorSequenceKeypoint.new(1, Color3.new(1,1,1) * 0.92),
-		}
-		q.Transparency = NumberSequence.new{
-			NumberSequenceKeypoint.new(0, 0.85),
-			NumberSequenceKeypoint.new(1, 0.92),
-		}
-		o.ZIndex = 995
-		o.Parent = m
-		table.insert(i, o)
-	end
-	return {holder = m, bands = i}
+
+local function s(t,o)
+ local f1 = Instance.new("Frame")
+ f1.Name = "lg_sheen_top"
+ f1.Size = UDim2.new(0.9,0,0.2,0)
+ f1.Position = UDim2.new(-0.05,0,-0.12,0)
+ f1.BackgroundTransparency = 1
+ f1.ZIndex = t.ZIndex + 70
+ f1.Parent = t
+ local g1 = Instance.new("UIGradient")
+ g1.Rotation = 35
+ g1.Color = ColorSequence.new(
+  ColorSequenceKeypoint.new(0,Color3.fromRGB(255,255,255)),
+  ColorSequenceKeypoint.new(0.4,Color3.fromRGB(255,255,255)),
+  ColorSequenceKeypoint.new(1,Color3.fromRGB(220,230,255))
+ )
+ g1.Transparency = NumberSequence.new(
+  NumberSequenceKeypoint.new(0,0.15),
+  NumberSequenceKeypoint.new(0.6,1),
+  NumberSequenceKeypoint.new(1,0.35)
+ )
+ g1.Parent = f1
+ local f2 = Instance.new("Frame")
+ f2.Name = "lg_sheen_bot"
+ f2.Size = UDim2.new(0.85,0,0.18,0)
+ f2.AnchorPoint = Vector2.new(1,1)
+ f2.Position = UDim2.new(1.05,0,1.12,0)
+ f2.BackgroundTransparency = 1
+ f2.ZIndex = t.ZIndex + 69
+ f2.Parent = t
+ local g2 = Instance.new("UIGradient")
+ g2.Rotation = 220
+ g2.Color = ColorSequence.new(
+  ColorSequenceKeypoint.new(0,Color3.fromRGB(190,200,220)),
+  ColorSequenceKeypoint.new(1,Color3.fromRGB(150,160,190))
+ )
+ g2.Transparency = NumberSequence.new(
+  NumberSequenceKeypoint.new(0,0.3),
+  NumberSequenceKeypoint.new(1,1)
+ )
+ g2.Parent = f2
+ return {top=f1,bot=f2}
 end
-function d:Glass(t, u)
-	assert(t, "LiquidGlass:Glass expects a Frame/SurfaceGui")
-	if e[t] then return e[t] end
-	local v = h(f, u or {})
-	local w = g[string.lower(v.Performance or "medium")]
-	if w then v = h(v, w) end
-	local x = Instance.new("Frame")
-	x.Name = "LiquidGlassHolder_" .. c:GenerateGUID(false)
-	x.Size = UDim2.fromScale(1,1)
-	x.Position = UDim2.fromScale(0,0)
-	x.BackgroundTransparency = 1
-	x.ClipsDescendants = true
-	x.ZIndex = (t.ZIndex or 1)
-	x.Parent = t
-	if v.AutoMask then
-		local y = Instance.new("UICorner")
-		y.CornerRadius = UDim.new(0, v.CornerRadius or f.CornerRadius)
-		y.Parent = x
-		x.ClipsDescendants = true
-	end
-	local z = k(x, v)
-	local a = l(x, v)
-	local b = {}
-	local c = v.Layers or f.Layers
-	local d = v.Chromatic and (c >= 3)
-	local e = c
-	if d then e = math.max(3, c) end
-	for i = 1, e do
-		local j = Instance.new("ViewportFrame")
-		j.Name = "LG_Viewport_"..i
-		j.Size = UDim2.fromScale(1,1)
-		j.Position = UDim2.fromScale(0,0)
-		j.BackgroundTransparency = 1
-		j.BorderSizePixel = 0
-		j.ZIndex = x.ZIndex + i
-		j.Parent = x
-		local k = Instance.new("WorldModel")
-		k.Name = "LG_WM_"..i
-		k.Parent = j
-		local l = Instance.new("Camera")
-		l.Name = "LG_Cam_"..i
-		l.Parent = k
-		j.CurrentCamera = l
-		local m = Instance.new("Frame")
-		m.Name = "LG_Tint_"..i
-		m.Size = UDim2.fromScale(1,1)
-		m.Position = UDim2.new(0,0,0,0)
-		m.BackgroundTransparency = 1
-		m.ZIndex = j.ZIndex + 1
-		m.Parent = x
-		table.insert(b, {vp = j, cam = l, wm = k, tint = m, idx = i})
-	end
-	for _,p in ipairs(b) do
-		spawn(function()
-			j(p.wm, v)
-		end)
-	end
-	local q = 0
-	local r
-	r = a.Heartbeat:Connect(function(s)
-		q = q + s
-		if q >= (v.UpdateClonesEvery or f.UpdateClonesEvery) then
-			for _,p in ipairs(b) do
-				j(p.wm, v)
-			end
-			q = 0
-		end
-	end)
-	local t = 0
-	local u
-	u = a.RenderStepped:Connect(function(s)
-		if not x or not x.Parent then
-			u:Disconnect()
-			if r then r:Disconnect() end
-			e[t] = nil
-			return
-		end
-		t = t + s * (v.NoiseSpeed or f.NoiseSpeed)
-		if z and z.tl and z.br then
-			local v1 = z.tl
-			local v2 = z.br
-			v1.Rotation = ((math.noise(t*0.2, 4)-0.5) * 6)
-			v2.Rotation = ((math.noise(t*0.18, 6)-0.5) * 6) + 180
-			local w = 1 - (0.1 * math.abs(math.sin(t*0.6)))
-			for _,g in pairs(v1:GetDescendants()) do
-				if g:IsA("UIGradient") then
-					local h = 1 - (v.SheenStrength or f.SheenStrength)
-					g.Transparency = NumberSequence.new{
-						NumberSequenceKeypoint.new(0, h * w),
-						NumberSequenceKeypoint.new(0.6, 1),
-						NumberSequenceKeypoint.new(1, h * w),
-					}
-				end
-			end
-			for _,g in pairs(v2:GetDescendants()) do
-				if g:IsA("UIGradient") then
-					local h = 1 - ((v.SheenStrength or f.SheenStrength) * 0.5)
-					g.Transparency = NumberSequence.new{
-						NumberSequenceKeypoint.new(0, h * w),
-						NumberSequenceKeypoint.new(1, 1),
-					}
-				end
-			end
-		end
-		if a and a.bands then
-			for i,p in ipairs(a.bands) do
-				local q = math.noise(t * 0.8 + i*0.11, i*0.37)
-				local r = (q - 0.5) * 0.025 * (v.Wobble or f.Wobble) * 6
-				local s = (math.noise(t*0.3, i*0.2) - 0.5) * 0.015
-				p.Position = UDim2.new(s, 0, p.Position.Y.Scale + r, 0)
-				local y = p.Position.Y.Scale
-				if y > 1.2 then p.Position = UDim2.new(p.Position.X.Scale,0, -0.05,0) end
-				if y < -0.2 then p.Position = UDim2.new(p.Position.X.Scale,0, 1.05,0) end
-			end
-		end
-		local v = workspace.CurrentCamera
-		if v then
-			for i,p in ipairs(b) do
-				local w = p.cam
-				local x = (math.noise(t * (0.9 + i*0.07), i*10) - 0.5) * (v.Wobble or f.Wobble) * (0.6 + i*0.5)
-				local y = (math.noise(t * (1.05 + i*0.08), i*20 + 4) - 0.5) * (v.Wobble or f.Wobble) * (0.45 + i*0.45)
-				local z = CFrame.new(x, y, 0)
-				local a = CFrame.Angles(0, 0, (math.noise(t*0.7, i*2)-0.5)*0.015)
-				w.CFrame = v.CFrame * z * a
-				w.FieldOfView = v.FieldOfView + (i-1) * (v.FOVSpread or f.FOVSpread)
-			end
-			if v.Chromatic then
-				local b = {Color3.fromRGB(255,180,180), Color3.fromRGB(190,230,255), Color3.fromRGB(220,255,200)}
-				for i,p in ipairs(b) do
-					local q = p.tint
-					if q and i <= 3 then
-						q.BackgroundTransparency = 0.92
-						q.BackgroundColor3 = b[i]
-						local r = (math.noise(t*0.55, i*2)-0.5) * 0.004 * i
-						local s = (math.noise(t*0.43, i*3)-0.5) * 0.004 * i
-						q.Position = UDim2.new(r, 0, s, 0)
-					else
-						if q then q.BackgroundTransparency = 1 end
-					end
-				end
-			else
-				for _,p in ipairs(b) do
-					if p.tint then p.tint.BackgroundTransparency = 1 end
-				end
-			end
-		end
-	end)
-	local v = {}
-	v._holder = x
-	v._layers = b
-	v._bandData = a
-	v._sheens = z
-	v._cloneConn = r
-	v._mainConn = u
-	v._opts = v
-	v.Destroy = function()
-		if v._mainConn then v._mainConn:Disconnect() end
-		if v._cloneConn then v._cloneConn:Disconnect() end
-		if x and x.Parent then x:Destroy() end
-		e[t] = nil
-	end
-	v.Update = function(w)
-		w = w or {}
-		for k,n in pairs(w) do
-			v._opts[k] = n
-		end
-		if w.Performance and g[w.Performance] then
-			v._opts = h(v._opts, g[w.Performance])
-		end
-		if v._holder and v._holder:FindFirstChildOfClass("UICorner") then
-			v._holder:FindFirstChildOfClass("UICorner").CornerRadius = UDim.new(0, v._opts.CornerRadius or f.CornerRadius)
-		end
-	end
-	e[t] = v
-	return v
+
+function m:glass(t,u)
+ local o = q(d,u or {})
+ if a[t] then return a[t] end
+ local p = Instance.new("Frame")
+ p.Name = "lg_holder_"..h:GenerateGUID(false)
+ p.Size = UDim2.fromScale(1,1)
+ p.Position = UDim2.fromScale(0,0)
+ p.BackgroundTransparency = 1
+ p.ClipsDescendants = true
+ p.ZIndex = t.ZIndex + 1
+ p.Parent = t
+ local c = Instance.new("UICorner")
+ c.CornerRadius = UDim.new(0,o.corner or d.corner)
+ c.Parent = p
+ local st = Instance.new("UIStroke")
+ st.Thickness = 1.4
+ st.Color = Color3.fromRGB(255,255,255)
+ st.Transparency = 0.35
+ st.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+ st.Parent = p
+ local bg = Instance.new("UIGradient")
+ bg.Rotation = 135
+ bg.Color = ColorSequence.new(
+  ColorSequenceKeypoint.new(0,Color3.fromRGB(190,210,240)),
+  ColorSequenceKeypoint.new(0.3,Color3.fromRGB(120,145,190)),
+  ColorSequenceKeypoint.new(1,Color3.fromRGB(10,12,20))
+ )
+ bg.Transparency = NumberSequence.new(
+  NumberSequenceKeypoint.new(0,0.15),
+  NumberSequenceKeypoint.new(1,0.4)
+ )
+ bg.Parent = p
+ local v = s(p,o)
+ local bd = b(p,o)
+ local L = {}
+ local cnt = o.layers or d.layers
+ for i = 1,cnt do
+  local vf = Instance.new("ViewportFrame")
+  vf.Name = "lg_view_"..i
+  vf.Size = UDim2.fromScale(1,1)
+  vf.Position = UDim2.fromScale(0,0)
+  vf.BackgroundTransparency = 1
+  vf.BorderSizePixel = 0
+  vf.LightColor = Color3.fromRGB(255,255,255)
+  vf.Ambient = Color3.fromRGB(10,10,18)
+  vf.ImageColor3 = Color3.new(1,1,1)
+  vf.ZIndex = p.ZIndex + i * 2
+  vf.Parent = p
+  local wm = Instance.new("WorldModel")
+  wm.Name = "lg_wm_"..i
+  wm.Parent = vf
+  local c2 = Instance.new("Camera")
+  c2.Name = "lg_cam_"..i
+  c2.Parent = wm
+  vf.CurrentCamera = c2
+  local tint = Instance.new("Frame")
+  tint.Name = "lg_tint_"..i
+  tint.Size = UDim2.fromScale(1,1)
+  tint.Position = UDim2.new(0,0,0,0)
+  tint.BackgroundTransparency = 1
+  tint.ZIndex = vf.ZIndex + 1
+  tint.Parent = p
+  table.insert(L,{vp=vf,wm=wm,cam=c2,tint=tint,idx=i})
+ end
+ for _,x in ipairs(L) do
+  task.spawn(function()
+   k(x.wm,o)
+  end)
+ end
+ local cc = 0
+ local hb
+ hb = r.Heartbeat:Connect(function(dt)
+  cc = cc + dt
+  if cc >= (o.refreq or d.refreq) then
+   for _,x in ipairs(L) do
+    k(x.wm,o)
+   end
+   cc = 0
+  end
+ end)
+ local tt = 0
+ local rs
+ rs = r.RenderStepped:Connect(function(dt)
+  if not p or not p.Parent then
+   rs:Disconnect()
+   if hb then hb:Disconnect() end
+   a[t] = nil
+   return
+  end
+  tt = tt + dt * (o.speed or d.speed)
+  if v and v.top and v.bot then
+   local n1 = math.noise(tt*0.24,3)
+   local n2 = math.noise(tt*0.2,6)
+   v.top.Rotation = (n1-0.5)*5
+   v.bot.Rotation = (n2-0.5)*4 + 180
+  end
+  if bd and bd.bands then
+   for i,x in ipairs(bd.bands) do
+    local n = math.noise(tt*0.7 + i*0.13,i*0.41)
+    local j = (n-0.5)*0.03*(o.wobble or d.wobble)
+    local nx = (math.noise(tt*0.4,i*0.29)-0.5)*0.018
+    local ys = x.Position.Y.Scale + j
+    if ys > 1.15 then ys = -0.12 end
+    if ys < -0.2 then ys = 1.05 end
+    x.Position = UDim2.new(nx,0,ys,0)
+   end
+  end
+  local cam = w.CurrentCamera
+  if cam then
+   for i,x in ipairs(L) do
+    local c2 = x.cam
+    local nx = (math.noise(tt*(0.9+i*0.05),i*7)-0.5)*(o.wobble or d.wobble)*(0.6+i*0.4)
+    local ny = (math.noise(tt*(1.1+i*0.06),i*11)-0.5)*(o.wobble or d.wobble)*(0.5+i*0.4)
+    local off = CFrame.new(nx,ny,0)
+    local rot = CFrame.Angles(0,0,(math.noise(tt*0.65,i*3)-0.5)*0.02)
+    c2.CFrame = cam.CFrame * off * rot
+    c2.FieldOfView = cam.FieldOfView + (i-1)*(o.spread or d.spread)
+   end
+   if o.chroma then
+    local cols = {
+     Color3.fromRGB(255,200,210),
+     Color3.fromRGB(200,225,255),
+     Color3.fromRGB(210,255,220)
+    }
+    for i,x in ipairs(L) do
+     local t2 = x.tint
+     if i <= 3 then
+      local nx = (math.noise(tt*0.5,i*2)-0.5)*0.006*i
+      local ny = (math.noise(tt*0.42,i*3)-0.5)*0.006*i
+      t2.BackgroundColor3 = cols[i]
+      t2.BackgroundTransparency = 0.9
+      t2.Position = UDim2.new(nx,0,ny,0)
+     else
+      t2.BackgroundTransparency = 1
+     end
+    end
+   else
+    for _,x in ipairs(L) do
+     x.tint.BackgroundTransparency = 1
+    end
+   end
+  end
+ end)
+ local h2 = {}
+ h2._holder = p
+ h2._layers = L
+ h2._bands = bd
+ h2._sheen = v
+ h2._hb = hb
+ h2._rs = rs
+ h2._opts = o
+ function h2:destroy()
+  if self._rs then self._rs:Disconnect() end
+  if self._hb then self._hb:Disconnect() end
+  if self._holder and self._holder.Parent then self._holder:Destroy() end
+ end
+ a[t] = h2
+ return h2
 end
-function d:Destroy(t)
-	local u = e[t]
-	if not u then return end
-	u:Destroy()
+
+function m:isglass(t)
+ return a[t] ~= nil
 end
-function d:IsGlass(t)
-	return e[t] ~= nil
-end
-function d:Update(t, u)
-	local v = e[t]
-	if v and u then
-		v.Update(u)
-	end
-end
-return setmetatable({}, d)
+
+return setmetatable({},m)
