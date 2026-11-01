@@ -1,8 +1,3 @@
--- Yes, I know it's AI, but I don't have time to write these myself. I have a life. Instead of looking at this script as "average vibe code slop", look at it as "vibe coded, but it works fine". I can't say 'I made this script', but 'I wrote the prompt that got me this script'. 
-
--- Thanks for reading,
--- shadow62
-
 -- This script is REALLY customizable, has optimization and is very clean!
 
 local r = game:GetService("RunService")
